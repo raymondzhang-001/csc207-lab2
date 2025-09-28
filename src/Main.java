@@ -16,7 +16,7 @@ public class Main {
         //      The MarkUs self tests run this file as part of testing your code.
 
         List<MultiSet> multisets = new ArrayList<>();
-        multisets.add(new BSTMultiSet());
+        multisets.add(new TreeMultiSet());
 
         for (MultiSet m :
                 multisets) {
