@@ -31,8 +31,7 @@ public class BST {
     // TODO Task: Implement the BST methods.
 
     public boolean isEmpty() {
-        // TODO implement me!
-        return false;
+        return this.root == null;
     }
 
     public boolean contains(Integer item) {
@@ -54,37 +53,111 @@ public class BST {
 
 
     public void insert(Integer item) {
-        // TODO implement me!
+        if (this.isEmpty()) {
+            this.root = item;
+            this.left = new BST();
+            this.right = new BST();
+        }
+        else if (item <= this.root) {
+            this.left.insert(item);
+        }
+        else {
+            this.right.insert(item);
+        }
     }
 
 
     public void delete(Integer item) {
-        // TODO implement me!
+        if (this.isEmpty()) {
+            return;
+        }
+        else if (item.equals(this.root)) {
+            this.deleteRoot();
+        }
+        else if (item.compareTo(this.root) < 0) {
+            this.left.delete(item);
+        }
+        else {
+            this.right.delete(item);
+        }
     }
 
     private void deleteRoot() {
-        // TODO implement me!
+        if (this.isEmpty()) return;
+
+        boolean leftEmpty  = (this.left  == null) || this.left.isEmpty();
+        boolean rightEmpty = (this.right == null) || this.right.isEmpty();
+
+        // Case 1: leaf
+        if (leftEmpty && rightEmpty) {
+            this.root = null;
+            this.left = null;
+            this.right = null;
+            return;
+        }
+
+        // Case 2a: only right child -> promote right subtree
+        if (leftEmpty && !rightEmpty) {
+            BST r = this.right;          // save before overwriting
+            this.root  = r.root;
+            this.left  = r.left;
+            this.right = r.right;
+            return;
+        }
+
+        // Case 2b: only left child -> promote left subtree
+        if (!leftEmpty && rightEmpty) {
+            BST l = this.left;           // save before overwriting
+            this.root  = l.root;
+            this.left  = l.left;
+            this.right = l.right;
+            return;
+        }
+
+        // Case 3: two children -> replace with predecessor (max of left)
+        this.root = this.left.extractMax();
     }
+
 
 
     private Integer extractMax() {
-        // TODO implement me!
-        return this.root; // dummy code; replace with correct code when you implement this.
+        if (this.right.isEmpty()) {
+            int max = this.root;
+            this.deleteRoot();
+            return max;
+        }
+        else {
+            return this.right.extractMax();
+        }
     }
 
     public int height() {
-        // TODO implement me!
-        return 0; // dummy code; replace with correct code when you implement this.
+        if (this.isEmpty()) {
+            return 0;
+        }
+        else {
+            return Math.max(this.left.height(), this.right.height()) + 1;
+        }
     }
 
     public int count(Integer item) {
-        // TODO implement me!
-        return 0; // dummy code; replace with correct code when you implement this.
+        if (this.isEmpty() || item == null) return 0;
+
+        int cmp = item.compareTo(this.root);
+        if (cmp < 0) {
+            return this.left.count(item);
+        } else if (cmp > 0) {
+            return this.right.count(item);
+        } else {
+            return 1 + this.left.count(item);
+        }
     }
 
     public int getLength() {
-        // TODO implement me!
-        return 0; // dummy code; replace with correct code when you implement this.
+        if (this.isEmpty()) {
+            return 0;
+        }
+        return 1 + this.right.getLength() + this.left.getLength();
     }
 
     public static void main(String[] args) {
